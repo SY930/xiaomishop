@@ -1,6 +1,6 @@
-# sell
+# xiaomishop
 
-> sell app
+> A Vue.js project
 
 ## Build Setup
 
