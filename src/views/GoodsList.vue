@@ -14,12 +14,12 @@
         </div>
         <div class="accessory-result">
           <!-- filter -->
-          <div class="filter stopPop" id="filter" :class="{'filterby':filterBy}">
+          <div class="filter stopPop" id="filter" :class="{'filterby-show':filterBy}">
             <dl class="filter-price">
               <dt>Price:</dt>
               <dd><a href="javascript:void(0)" :class="{'cur':priceChecked==='all'}" @click="priceChecked='all'">All</a></dd>
               <dd v-for="(price,index) in priceFilter" >
-                <a href="javascript:void(0)" @click="priceChecked=index" :class="{'cur':priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
+                <a href="javascript:void(0)" @click="setPriceFilter(index)" :class="{'cur':priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
               </dd>
             </dl>
           </div>
@@ -30,7 +30,7 @@
               <ul>
                 <li v-for="(item,index) in goodsList">
                   <div class="pic">
-                    <a href="#"><img :src="'/static/'+item.prodcutImg" alt=""></a>
+                    <a href="#"><img v-lazy="'/static/'+item.prodcutImg" alt=""></a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="md-overlay " v-show="overLayFlag" @click="close"></div>
+    <div class="md-overlay " v-show="overLayFlag" @click="closePop"></div>
    <NavFooter></NavFooter>
   </div>
 </template>
@@ -93,15 +93,26 @@ import {getGoods} from '../api'
         getGoodsList(){
           getGoods().then((res)=>{
             if(res.status==0){
+              console.log(res);
               this.goodsList = res.result
             }
 
           })
-        }
+        },
+      showFilterPop(){
+        this.filterBy=true;
+        this.overLayFlag=true
+      },
+      closePop(){
+        this.filterBy=false;
+        this.overLayFlag=false
+      },
+      setPriceFilter(index){
+          this.priceChecked = index;
+          this.closePop()
+      }
     },
-    showFilterPop(){
 
-    }
 
   }
 </script>
