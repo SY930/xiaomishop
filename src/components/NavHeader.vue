@@ -76,7 +76,7 @@
 
 <script>
   import './../assets/css/login.css'
-  import {logins,logOuts} from './../api'
+  import {logins,logOuts,checkLogin} from './../api'
 export default {
   name: ' ',
   data () {
@@ -88,7 +88,17 @@ export default {
       nickName:''
     }
   },
+  mounted(){
+    this.checkLogins();
+  },
   methods:{
+    checkLogins(){
+          checkLogin().then((res)=>{
+              if(res.status=='0'){
+                  this.nickName = res.result;
+              }
+          })
+      },
     login(){
         if(!this.userName|| !this.userPwd){
             this.errorTip = true;
