@@ -75,8 +75,8 @@ router.get('/list',function (req,res,next) {
 
 //加入到购物车
 router.post("/addCart",function (req,res,next) {
-  var userId = '100000077',productId = req.body.productId
-  var User = require('../models/user')
+  var userId = '100000077',productId = req.body.productId;
+  var User = require('../models/user');
 
   User.findOne({userId:userId},function (err,userDoc) {
     if(err){
@@ -85,7 +85,7 @@ router.post("/addCart",function (req,res,next) {
         msg:err.message
       })
     }else {
-      console.log("userDoc:" + userDoc);
+     // console.log("userDoc:" + userDoc);
       if(userDoc){
         let goodsItem  = '';
         userDoc.cartList.forEach(function (item) {
@@ -110,7 +110,7 @@ router.post("/addCart",function (req,res,next) {
             }
           })
         }else {
-          Goods.findOne({"productId":productId},function (err1,doc) {
+          Goods.findOne({productId:productId},function (err1,doc) {
             if(err1){
               res.json({
                 status:'1',
@@ -120,6 +120,7 @@ router.post("/addCart",function (req,res,next) {
               if(doc){
                 doc.productNum = 1;
                 doc.checked = 1;
+                //console.log(doc);
                 userDoc.cartList.push(doc);
                 userDoc.save(function (err2,doc2) {
                   if(err2){
@@ -143,5 +144,5 @@ router.post("/addCart",function (req,res,next) {
       }
     }
   })
-})
+});
 module.exports = router;

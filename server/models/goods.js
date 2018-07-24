@@ -5,9 +5,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var prodcutSchema = new Schema({
-  "productName":{type:String},
-  "productAge":String,
+  "productId":{type:String},
+  "productName":String,
+  "checked":String,
   "salePrice":Number,
+  "productNum":Number,
   "productImage":String
 });
 

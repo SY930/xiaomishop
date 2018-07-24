@@ -20,5 +20,17 @@ export  let logOuts = ()=>{
 };
 export let checkLogin=()=>{
   return axios.get('/users/checkLogin')
+};
+export let getCartList=()=>{
+  return axios.get('/users/cartList');
+};
+export let delCarts=(productId)=>{
+  return axios.post('/users/cartDel',{productId:productId})
+};
+export let updateCart=(productId,productNum,checked)=>{
+  return axios.post('/users/cartEdit',{productId:productId,productNum:productNum,checked:checked})
+};
+export let editCheckAlls = (checkAll)=>{
+  return axios.post('/users/editCheckAll',{checkAll:checkAll})
 }
 
