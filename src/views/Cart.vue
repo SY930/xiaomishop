@@ -76,7 +76,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-2">
-                  <div class="item-price">{{item.salePrice}}</div>
+                  <div class="item-price">{{item.salePrice |  currency('$')}}</div>
                 </div>
                 <div class="cart-tab-3">
                   <div class="item-quantity">
@@ -90,7 +90,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">{{item.productNum*item.salePrice}}</div>
+                  <div class="item-price-total">{{(item.productNum*item.salePrice)| currency('$')}}</div>
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
@@ -119,10 +119,10 @@
             </div>
             <div class="cart-foot-r">
               <div class="item-total">
-                Item total: <span class="total-price">500</span>
+                Item total: <span class="total-price">{{totalPrice | currency('$')}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red">Checkout</a>
+                <a class="btn btn--red" :class="{'btn--dis':checkedCount==0}" @click="checkOut">Checkout</a>
               </div>
             </div>
           </div>
@@ -170,6 +170,7 @@
   import NavFooter from './../components/NavFooter'
   import NavBread from './../components/NavBread'
   import Modal from './../components/Modal'
+  import {currency} from './../util/currency'
   import {getCartList,delCarts,updateCart,editCheckAlls} from '../api'
   export default{
       data(){
@@ -190,6 +191,16 @@
                   if(item.checked=='1') i++
               })
         return i
+      },
+      //实时计算总金额
+      totalPrice(){
+          var money = 0;
+          this.cartList.forEach((item)=>{
+              if(item.checked=='1'){
+                  money+=parseFloat(item.salePrice)*parseInt(item.productNum)
+              }
+          });
+        return money
       }
     },
     components:{
@@ -253,6 +264,13 @@
               console.log('update success');
             }
         })
+      },
+      checkOut(){
+          if(this.checkedCount>0){
+              this.$router.push({
+                path:'/address'
+              })
+          }
       }
     }
   }
