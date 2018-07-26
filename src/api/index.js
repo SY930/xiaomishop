@@ -32,5 +32,10 @@ export let updateCart=(productId,productNum,checked)=>{
 };
 export let editCheckAlls = (checkAll)=>{
   return axios.post('/users/editCheckAll',{checkAll:checkAll})
+};
+
+//address
+export let getAddressList = ()=>{
+  return axios.get('/users/addressList')
 }
 
