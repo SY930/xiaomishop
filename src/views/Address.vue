@@ -5,7 +5,7 @@
       <span>Address</span>
     </NavBread>
     <div class="checkout-page">
-    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg xmlns:xlink="http://www.w3.org/1999/xlink" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <symbol id="icon-add" viewBox="0 0 31 32">
           <title>add</title>
@@ -60,21 +60,21 @@
         <div class="addr-list-wrap">
           <div class="addr-list">
             <ul>
-              <li v-for="(item,index) in addressListFilter" :class="{'check':checkIndex==index}" @click="checkIndex=index">
+              <li v-for="(item,index) in addressListFilter" :class="{'check':checkIndex==index}" @click="checkIndex=index;selectedAddrId=item.addressId">
                 <dl>
                   <dt>{{item.userName}}</dt>
                   <dd class="address">{{item.streetName}}</dd>
                   <dd class="tel">{{item.tel}}</dd>
                 </dl>
                 <div class="addr-opration addr-del">
-                  <a href="javascript:;" class="addr-del-btn">
+                  <a href="javascript:;" class="addr-del-btn" @click="delAddressConfirm(item.addressId)">
                     <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                   </a>
                 </div>
-                <div class="addr-opration addr-set-default">
+                <div class="addr-opration addr-set-default" v-if="!item.isDefault" @click="setDefault(item.addressId)">
                   <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
                 </div>
-                <div class="addr-opration addr-default">Default address</div>
+                <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
               </li>
               <li class="addr-new">
                 <div class="add-new-inner">
@@ -119,11 +119,18 @@
           </div>
         </div>
         <div class="next-btn-wrap">
-          <a class="btn btn--m btn--red">Next</a>
+          <router-link class="btn btn--m btn--red" :to="{path:'/orderConfirm',query:{'addressId':selectedAddrId}}">Next</router-link>
         </div>
       </div>
     </div>
   </div>
+    <Modal :mdShow="isMdShow" @close="closeModal">
+      <p slot="message">您是否确定删除此地址</p>
+      <div slot="btnGroup">
+        <a href="javascript:;" class="btn btn--m" @click="delAddress">确认</a>
+        <a href="javascript:;" class="btn btn--m"  @click="isMdShow=false">取消</a>
+      </div>
+    </Modal>
     <NavFooter></NavFooter>
   </div>
 </template>
@@ -135,13 +142,16 @@
   import NavFooter from './../components/NavFooter'
   import NavBread from './../components/NavBread'
   import Modal from './../components/Modal'
-  import {getAddressList} from '../api'
+  import {getAddressList,setAddress,delAddresses} from '../api'
   export default{
     data(){
         return{
             addressList:[],
           limit:3,
-          checkIndex:0
+          checkIndex:0,
+          isMdShow:false,
+          addressId:'',
+          selectedAddrId:""
         }
     },
     components:{
@@ -172,7 +182,33 @@
             }else {
                 this.limit = 3
             }
-      }
+      },
+      setDefault(addressId){
+          setAddress(addressId).then((res)=>{
+              if(res.status=='0'){
+                console.log("set Default");
+                this.init();
+              }
+          })
+      },
+      closeModal(){
+          this.isMdShow = false;
+      },
+
+      delAddressConfirm(addressId){
+          this.isMdShow = true;
+          this.addressId = addressId
+      },
+      delAddress(){
+          delAddresses(this.addressId).then((res)=>{
+              if(res.status=='0'){
+                console.log("del  success");
+                this.isMdShow = false;
+                this.init()
+              }
+          })
+  }
+
     }
   }
 </script>

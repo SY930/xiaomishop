@@ -37,5 +37,12 @@ export let editCheckAlls = (checkAll)=>{
 //address
 export let getAddressList = ()=>{
   return axios.get('/users/addressList')
+};
+export let setAddress = (addressId)=>{
+  return axios.post('/users/setDefault',{addressId:addressId})
+};
+
+export  let delAddresses = (addressId)=>{
+  return axios.post('/users/delAddress',{addressId:addressId})
 }
 
