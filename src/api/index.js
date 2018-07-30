@@ -44,5 +44,8 @@ export let setAddress = (addressId)=>{
 
 export  let delAddresses = (addressId)=>{
   return axios.post('/users/delAddress',{addressId:addressId})
+};
+export let postPayMent = (addressId,orderTotal)=>{
+  return axios.post('/users/payMent',{addressId:addressId,orderTotal:orderTotal})
 }
 
