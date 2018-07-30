@@ -47,5 +47,11 @@ export  let delAddresses = (addressId)=>{
 };
 export let postPayMent = (addressId,orderTotal)=>{
   return axios.post('/users/payMent',{addressId:addressId,orderTotal:orderTotal})
+};
+
+export let getOrderDetail = (orderId)=>{
+  return axios.get('/users/orderDetail',{params:{
+    orderId:orderId
+  }})
 }
 
