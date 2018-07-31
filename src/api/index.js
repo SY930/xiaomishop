@@ -53,5 +53,11 @@ export let getOrderDetail = (orderId)=>{
   return axios.get('/users/orderDetail',{params:{
     orderId:orderId
   }})
+};
+
+//vuex相关查询购物车的数量
+export let getCartCounts =()=>{
+  return axios.get('/users/getCartCount')
 }
+
 

@@ -94,7 +94,7 @@
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
-                    <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item.productId)">
+                    <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item)">
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del"></use>
                       </svg>
@@ -177,7 +177,7 @@
           return {
               cartList:[],
             modalConfirm:false,
-            productId:''
+            delItem:{}
           }
       },
     computed:{
@@ -218,15 +218,17 @@
             this.cartList = res.result;
           })
         },
-      delCartConfirm(productId){
+      delCartConfirm(item){
         this.modalConfirm = true;
-        this.productId = productId
+        this.delItem = item
       },
       delCart(){
-          delCarts(this.productId).then((res)=>{
+          delCarts(this.delItem.productId).then((res)=>{
               if(res.status=='0'){
                 this.modalConfirm = false;
+                var delCount = this.delItem.productNum;
                 this.init();
+                this.$store.commit('updateCartCount',-delCount)
         }
           })
       },
@@ -248,7 +250,13 @@
 
           updateCart(item.productId,item.productNum,item.checked).then((res)=>{
               if(res.status=='0'){
-
+                  let num =0;
+                if(flag=='add'){
+                  num = 1;
+                }else if(flag=='minus'){
+                    num = -1
+                }
+                this.$store.commit('updateCartCount',num)
               }
           })
 

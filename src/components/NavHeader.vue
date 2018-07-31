@@ -32,7 +32,7 @@
           <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true"  v-if="!nickName">Login</a>
           <a href="javascript:void(0)" class="navbar-link" v-else @click="logOut">Log Out</a>
           <div class="navbar-cart-container">
-            <span class="navbar-cart-count"></span>
+            <span class="navbar-cart-count" v-if="cartCount>0">{{cartCount}}</span>
             <a class="navbar-link navbar-cart-link" href="/#/cart">
               <svg class="navbar-cart-logo">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -76,26 +76,38 @@
 
 <script>
   import './../assets/css/login.css'
-  import {logins,logOuts,checkLogin} from './../api'
+  import { mapState } from 'vuex'
+  import {checkLogin,logins,logOuts,getCartCounts} from './../api'
 export default {
-  name: ' ',
+  name: '',
   data () {
     return {
      userName:'',
       userPwd:'',
       errorTip:false,
       loginModalFlag:false,
-      nickName:''
+      //nickName:''
     }
   },
-  mounted(){
+  computed:{
+    ...mapState(['nickName','cartCount'])
+     /* nickName(){
+          return this.$store.state.nickName;
+      },
+    cartCount(){
+          return this.$store.state.cartCount
+    }*/
+  },
+  created(){
     this.checkLogins();
   },
   methods:{
     checkLogins(){
           checkLogin().then((res)=>{
               if(res.status=='0'){
-                  this.nickName = res.result;
+                this.$store.commit("updateUserInfo",res.result);
+                this._getCartCount();
+
               }
           })
       },
@@ -110,8 +122,9 @@ export default {
               this.errorTip = false;
               this.loginModalFlag = false;
               //to-do
-              this.nickName = res.result.userName
-
+              //this.nickName = res.result.userName
+              this.$store.commit("updateUserInfo",res.result.userName);
+              this._getCartCount();
             }else {
               this.errorTip = true
             }
@@ -119,10 +132,19 @@ export default {
     },
     logOut(){
       logOuts().then((res)=>{
-          if(res.status=='0'){
-              this.nickName=''
+        console.log(res);
+        if(res.status=='0'){
+         // this.nickName ='';
+            this.$store.commit("updateUserInfo","");
           }
       })
+    },
+    _getCartCount(){
+        getCartCounts().then((res)=>{
+            if(res.status=='0'){
+                this.$store.commit('initCartCount',res.result)
+            }
+        })
     }
   }
 }
